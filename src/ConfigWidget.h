@@ -12,7 +12,7 @@ class ConfigWidget : public QWidget
 {
     Q_OBJECT
 public:
-    ConfigWidget(QScreen* screen, QWidget* wallpaper, QWidget* parent=nullptr) noexcept;
+    ConfigWidget(QScreen* screen, QWidget* parent=nullptr) noexcept;
     ~ConfigWidget() noexcept;
 
     void start() const noexcept;

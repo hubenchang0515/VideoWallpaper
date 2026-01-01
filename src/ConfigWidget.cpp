@@ -5,14 +5,14 @@
 #include "WallpaperTool.h"
 #include <QScreen>
 
-ConfigWidget::ConfigWidget(QScreen* screen, QWidget* wallpaper, QWidget* parent) noexcept:
+ConfigWidget::ConfigWidget(QScreen* screen, QWidget* parent) noexcept:
     QWidget{parent},
     m_layout{new QHBoxLayout},
     m_label{new QLabel{tr("Video File:")}},
     m_edit{new QLineEdit},
     m_start{new QPushButton{tr("START")}},
     m_stop{new QPushButton{tr("STOP")}},
-    m_player{new VideoWindow{screen, wallpaper}}
+    m_player{new VideoWindow{screen}}
 {
     auto action = m_edit->addAction(this->style()->standardIcon(QStyle::SP_DialogOpenButton), QLineEdit::TrailingPosition);
     connect(action, &QAction::triggered, this, [this](){

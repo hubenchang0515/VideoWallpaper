@@ -15,7 +15,6 @@ public:
 private:
     QVBoxLayout* m_layout;
     QTabWidget* m_tabs;
-    QDialog* m_wallpaper;
 };
 
 #endif // MAIN_WINDOW_H

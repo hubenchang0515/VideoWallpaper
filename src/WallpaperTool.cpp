@@ -38,7 +38,7 @@ void SetWallpaperWindow(WId win)
     }
 }
 
-void DetachWindow(WId win)
+void DetachWallpaperWindow(WId win)
 {
     SetParent(reinterpret_cast<HWND>(win), NULL);   // 分离窗口
     SystemParametersInfo(20, 0, nullptr, 0x1);      // 刷新壁纸

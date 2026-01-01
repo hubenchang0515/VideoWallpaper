@@ -1,4 +1,5 @@
 #include <QApplication>
+#include <QFile>
 #include "MainWindow.h"
 
 int main(int argc, char* argv[])
@@ -11,8 +12,11 @@ int main(int argc, char* argv[])
 #if QT_VERSION >=  QT_VERSION_CHECK(5, 14, 0)
     QApplication::setHighDpiScaleFactorRoundingPolicy(Qt::HighDpiScaleFactorRoundingPolicy::PassThrough);
 #endif
-
     QApplication app(argc, argv);
+    QFile qss{":/QtTheme/theme/Flat/Dark/Blue/Pink.qss"};
+    qss.open(QFile::ReadOnly);
+    auto data = qss.readAll();
+    app.setStyleSheet(data);
     MainWindow window;
     window.show();
     return app.exec();

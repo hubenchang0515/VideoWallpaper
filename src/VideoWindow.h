@@ -1,11 +1,11 @@
 #ifndef VIDEO_WINDOW_H
 #define VIDEO_WINDOW_H
 
-#include <QWidget>
+#include <QDialog>
 #include <QLayout>
 #include "VideoView.h"
 
-class VideoWindow : public QWidget
+class VideoWindow : public QDialog
 {
     Q_OBJECT
 public:
@@ -17,7 +17,6 @@ public:
     QScreen* screen() const noexcept;
 
 private:
-    bool m_working;
     QHBoxLayout* m_layout;
     VideoView* m_view;
     QScreen* m_screen;

@@ -4,6 +4,6 @@
 #include <QWidget>
 
 void SetWallpaperWindow(WId win);
-void DetachWindow(WId win);
+void DetachWallpaperWindow(WId win);
 
 #endif // WALLPAPER_TOOL_H
