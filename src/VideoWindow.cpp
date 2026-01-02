@@ -4,12 +4,12 @@
 #include "WallpaperTool.h"
 
 VideoWindow::VideoWindow(QScreen* screen, QWidget* parent) noexcept:
-    QDialog{parent},
+    QWidget{parent},
     m_layout{new QHBoxLayout},
     m_view{new VideoView},
     m_screen{screen}
 {
-    this->setWindowFlag(Qt::FramelessWindowHint);
+    this->setWindowFlags(Qt::FramelessWindowHint | Qt::SubWindow);
     m_layout->addWidget(m_view);
     m_layout->setSpacing(0);
     m_layout->setContentsMargins(0,0,0,0);
@@ -31,9 +31,9 @@ void VideoWindow::play(const QString& file) noexcept
     this->show();
     auto geometry = m_screen->geometry();
     auto refer = m_screen->virtualGeometry();
-    SetWindowPos(reinterpret_cast<HWND>(this->effectiveWinId()), NULL, geometry.x() - refer.x(), geometry.y() - refer.y(), geometry.width() * m_screen->devicePixelRatio(), geometry.height() * m_screen->devicePixelRatio(), 0);
+    SetWindowPos(reinterpret_cast<HWND>(this->effectiveWinId()), NULL, geometry.x() - refer.x(), geometry.y() - refer.y(), geometry.width() * m_screen->devicePixelRatio(), geometry.height() * m_screen->devicePixelRatio(), SWP_NOZORDER);
     SetWallpaperWindow(this->effectiveWinId());
-    SetWindowPos(reinterpret_cast<HWND>(this->effectiveWinId()), NULL, geometry.x() - refer.x(), geometry.y() - refer.y(), geometry.width() * m_screen->devicePixelRatio(), geometry.height() * m_screen->devicePixelRatio(), 0);
+    SetWindowPos(reinterpret_cast<HWND>(this->effectiveWinId()), NULL, geometry.x() - refer.x(), geometry.y() - refer.y(), geometry.width() * m_screen->devicePixelRatio(), geometry.height() * m_screen->devicePixelRatio(), SWP_NOZORDER);
 }
 
 void VideoWindow::stop() noexcept

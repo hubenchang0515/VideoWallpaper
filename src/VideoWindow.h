@@ -5,7 +5,7 @@
 #include <QLayout>
 #include "VideoView.h"
 
-class VideoWindow : public QDialog
+class VideoWindow : public QWidget
 {
     Q_OBJECT
 public:
