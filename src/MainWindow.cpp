@@ -3,6 +3,7 @@
 #include <QFile>
 #include "ConfigWidget.h"
 #include "WallpaperTool.h"
+#include "VideoWallpaper.h"
 
 MainWindow::MainWindow(QWidget* parent) noexcept:
     QDialog{parent},
@@ -11,7 +12,7 @@ MainWindow::MainWindow(QWidget* parent) noexcept:
 {
     for(QScreen* screen : QGuiApplication::screens())
     {
-        m_tabs->addTab(new ConfigWidget{screen}, screen->name());
+        m_tabs->addTab(new ConfigWidget{new VideoWallpaper{screen}}, screen->name());
     }
 
     m_layout->addWidget(m_tabs);
@@ -21,5 +22,5 @@ MainWindow::MainWindow(QWidget* parent) noexcept:
 
 MainWindow::~MainWindow() noexcept
 {
-
+    qDebug() << "~MainWindow";
 }

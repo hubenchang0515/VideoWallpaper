@@ -4,16 +4,17 @@
 #include <QDialog>
 #include <QLayout>
 #include "VideoView.h"
+#include "AbstractWallpaper.h"
 
-class VideoWindow : public QWidget
+class VideoWallpaper : public QDialog, public AbstractWallpaper
 {
     Q_OBJECT
 public:
-    VideoWindow(QScreen* screen, QWidget* parent=nullptr) noexcept;
-    ~VideoWindow();
+    VideoWallpaper(QScreen* screen) noexcept;
+    ~VideoWallpaper();
 
-    void play(const QString& file) noexcept;
-    void stop() noexcept;
+    virtual void start(const QString& file) noexcept override;
+    virtual void stop() noexcept override;
     QScreen* screen() const noexcept;
 
 private:

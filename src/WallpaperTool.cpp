@@ -28,21 +28,20 @@ static BOOL CALLBACK findWorkerW(HWND hwnd, LPARAM Lparam)
     return TRUE;
 }
 
-void SetWallpaperWindow(WId win)
+void SetWallpaperWindow(HWND win)
 {
-    HWND wallpaper = reinterpret_cast<HWND>(win);
-    SetWindowLong(wallpaper, GWL_STYLE, WS_POPUP | WS_VISIBLE);
-    SetWindowLong(wallpaper, GWL_EXSTYLE, WS_EX_TOOLWINDOW | WS_EX_NOACTIVATE);
-    SetLayeredWindowAttributes(wallpaper, 0, 255, LWA_ALPHA);
+    SetWindowLong(win, GWL_STYLE, WS_POPUP | WS_VISIBLE);
+    SetWindowLong(win, GWL_EXSTYLE, WS_EX_TOOLWINDOW | WS_EX_NOACTIVATE);
+    SetLayeredWindowAttributes(win, 0, 255, LWA_ALPHA);
 
-    pm = FindWindow(L"Progman", NULL);                                  // 找到 Program Manager 窗口
-    SendMessageTimeout(pm, 0x52C, NULL, NULL, SMTO_NORMAL, 500, NULL);  // 发送 0x52C
-    EnumWindows(findWorkerW, NULL);                                     // 查找 WorkerW
-    SetParent(wallpaper, paper);                                        // 将 wallpaper 设为 WorkerW 的子窗口
+    pm = FindWindow(L"Progman", nullptr);                               // 找到 Program Manager 窗口
+    SendMessageTimeout(pm, 0x52C, 0, 0, SMTO_NORMAL, 500, nullptr);     // 发送 0x52C
+    EnumWindows(findWorkerW, 0);                                        // 查找 WorkerW
+    SetParent(win, paper);                                              // 将 win 设为 WorkerW 的子窗口
 }
 
-void DetachWallpaperWindow(WId win)
+void DetachWallpaperWindow(HWND win)
 {
-    SetParent(reinterpret_cast<HWND>(win), NULL);   // 分离窗口
+    SetParent(win, nullptr);   // 分离窗口
     SystemParametersInfo(20, 0, nullptr, 0x1);      // 刷新壁纸
 }

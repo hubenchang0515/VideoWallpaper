@@ -6,13 +6,13 @@
 #include <QLabel>
 #include <QLineEdit>
 #include <QPushButton>
-#include "VideoWindow.h"
+#include "AbstractWallpaper.h"
 
 class ConfigWidget : public QWidget
 {
     Q_OBJECT
 public:
-    ConfigWidget(QScreen* screen, QWidget* parent=nullptr) noexcept;
+    ConfigWidget(AbstractWallpaper* wallpaper, QWidget* parent=nullptr) noexcept;
     ~ConfigWidget() noexcept;
 
     void start() const noexcept;
@@ -25,7 +25,7 @@ private:
     QPushButton* m_start;
     QPushButton* m_stop;
 
-    VideoWindow* m_player;
+    AbstractWallpaper* m_wallpaper;
 };
 
 #endif // CONFIG_WIDGET_H

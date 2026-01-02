@@ -1,9 +1,9 @@
 #ifndef WALLPAPER_TOOL_H
 #define WALLPAPER_TOOL_H
 
-#include <QWidget>
+#include <Windows.h>
 
-void SetWallpaperWindow(WId win);
-void DetachWallpaperWindow(WId win);
+void SetWallpaperWindow(HWND win);
+void DetachWallpaperWindow(HWND win);
 
 #endif // WALLPAPER_TOOL_H
