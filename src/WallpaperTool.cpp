@@ -33,6 +33,7 @@ void SetWindowGeometry(HWND win, int x, int y, int w, int h)
     SetWindowPos(win, nullptr, x, y, w, h, SWP_NOZORDER | SWP_FRAMECHANGED | SWP_DRAWFRAME);
     InvalidateRect(win, nullptr, TRUE);
     UpdateWindow(win);
+    Sleep(50);
 }
 
 void SetWallpaperWindow(HWND win)
