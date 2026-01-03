@@ -1,13 +1,11 @@
 #include "VideoWallpaper.h"
 #include <QScreen>
-#include <Windows.h>
 #include "WallpaperTool.h"
 
-VideoWallpaper::VideoWallpaper(QScreen* screen) noexcept:
+VideoWallpaper::VideoWallpaper() noexcept:
     QDialog{nullptr},   // 不能设置 parent,否则设为壁纸后无法渲染
     m_layout{new QHBoxLayout},
-    m_view{new VideoView},
-    m_screen{screen}
+    m_view{new VideoView}
 {
     this->setWindowFlags(Qt::FramelessWindowHint | Qt::SubWindow);
     this->setAttribute(Qt::WA_NativeWindow);
@@ -25,19 +23,19 @@ VideoWallpaper::~VideoWallpaper()
     this->stop();
 }
 
-void VideoWallpaper::start(const QString& file) noexcept
+void VideoWallpaper::start(const QScreen* screen, const QString& file) noexcept
 {
     m_view->setFile(file);
     m_view->setVolume(0);
     m_view->play();
     this->show();
-    auto geometry = m_screen->geometry();
-    auto refer = m_screen->virtualGeometry();
 
+    auto geometry = screen->geometry();
+    auto refer = screen->virtualGeometry();
     HWND win = reinterpret_cast<HWND>(this->winId());
-    SetWindowPos(win, nullptr, geometry.x() - refer.x(), geometry.y() - refer.y(), geometry.width() * m_screen->devicePixelRatio(), geometry.height() * m_screen->devicePixelRatio(), SWP_NOZORDER);
+    SetWindowGeometry(win, geometry.x() - refer.x(), geometry.y() - refer.y(), geometry.width() * screen->devicePixelRatio(), geometry.height() * screen->devicePixelRatio());
     SetWallpaperWindow(win);
-    SetWindowPos(win, nullptr, geometry.x() - refer.x(), geometry.y() - refer.y(), geometry.width() * m_screen->devicePixelRatio(), geometry.height() * m_screen->devicePixelRatio(), SWP_NOZORDER);
+    SetWindowGeometry(win, geometry.x() - refer.x(), geometry.y() - refer.y(), geometry.width() * screen->devicePixelRatio(), geometry.height() * screen->devicePixelRatio());
 }
 
 void VideoWallpaper::stop() noexcept

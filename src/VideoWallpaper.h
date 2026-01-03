@@ -10,17 +10,16 @@ class VideoWallpaper : public QDialog, public AbstractWallpaper
 {
     Q_OBJECT
 public:
-    VideoWallpaper(QScreen* screen) noexcept;
+    VideoWallpaper() noexcept;
     ~VideoWallpaper();
 
-    virtual void start(const QString& file) noexcept override;
+    virtual void start(const QScreen* screen, const QString& file) noexcept override;
     virtual void stop() noexcept override;
     QScreen* screen() const noexcept;
 
 private:
     QHBoxLayout* m_layout;
     VideoView* m_view;
-    QScreen* m_screen;
 };
 
 #endif // VIDEO_WINDOW_H

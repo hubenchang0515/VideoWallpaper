@@ -28,10 +28,17 @@ static BOOL CALLBACK findWorkerW(HWND hwnd, LPARAM Lparam)
     return TRUE;
 }
 
+void SetWindowGeometry(HWND win, int x, int y, int w, int h)
+{
+    SetWindowPos(win, nullptr, x, y, w, h, SWP_NOZORDER | SWP_FRAMECHANGED | SWP_DRAWFRAME);
+    InvalidateRect(win, nullptr, TRUE);
+    UpdateWindow(win);
+}
+
 void SetWallpaperWindow(HWND win)
 {
-    SetWindowLong(win, GWL_STYLE, WS_POPUP | WS_VISIBLE);
-    SetWindowLong(win, GWL_EXSTYLE, WS_EX_TOOLWINDOW | WS_EX_NOACTIVATE);
+    SetWindowLong(win, GWL_STYLE, WS_VISIBLE | WS_CLIPSIBLINGS | WS_OVERLAPPED | WS_MINIMIZEBOX);
+    SetWindowLong(win, GWL_EXSTYLE, WS_CHILD);
     SetLayeredWindowAttributes(win, 0, 255, LWA_ALPHA);
 
     pm = FindWindow(L"Progman", nullptr);                               // 找到 Program Manager 窗口
@@ -44,4 +51,37 @@ void DetachWallpaperWindow(HWND win)
 {
     SetParent(win, nullptr);   // 分离窗口
     SystemParametersInfo(20, 0, nullptr, 0x1);      // 刷新壁纸
+}
+
+// 用于传递数据给回调函数的结构体
+struct EnumData {
+    DWORD targetPid;
+    HWND hWnd;
+};
+
+// EnumWindows 的回调函数
+static BOOL CALLBACK EnumWindowsProc(HWND hWnd, LPARAM lParam) {
+    EnumData* data = (EnumData*)lParam;
+    DWORD windowPid = 0;
+
+    // 获取该窗口所属的进程 ID
+    GetWindowThreadProcessId(hWnd, &windowPid);
+
+    // 如果 PID 匹配 且 是主窗口（没有所有者）
+    if (windowPid == data->targetPid && GetWindow(hWnd, GW_OWNER) == NULL && IsWindowVisible(hWnd)) {
+        data->hWnd = hWnd;
+        return FALSE; // 找到目标，停止枚举
+    }
+
+    return TRUE; // 继续枚举
+}
+
+HWND FindWindowByPid(DWORD pid) {
+    EnumData data;
+    data.targetPid = pid;
+    data.hWnd = NULL;
+
+    EnumWindows(EnumWindowsProc, (LPARAM)&data);
+
+    return data.hWnd;
 }
