@@ -7,11 +7,10 @@ CmdWallpaper::CmdWallpaper(QString cmd, QStringList args) noexcept:
     QObject{nullptr},
     m_cmd{std::move(cmd)},
     m_args{std::move(args)},
-    m_process{new QProcess{this}}
+    m_process{new QProcess{this}},
+    m_timer{new QTimer{this}}
 {
-    connect(m_process, &QProcess::errorOccurred, this, [this]() {
-        QMessageBox::critical(nullptr, tr("Error"), m_process->errorString());
-    });
+    connect(m_timer, &QTimer::timeout, this, &CmdWallpaper::attach);
 }
 
 CmdWallpaper::~CmdWallpaper() noexcept
@@ -22,30 +21,49 @@ CmdWallpaper::~CmdWallpaper() noexcept
 
 void CmdWallpaper::start(const QScreen* screen, const QString& file)
 {
-    QStringList args = m_args;
-    args << file;
-    qDebug() << args;
-    m_process->start(m_cmd, args);
-    auto pid = m_process->processId();
-
-    QTimer::singleShot(1000, [screen, pid](){
-        auto geometry = screen->geometry();
-        auto refer = screen->virtualGeometry();
-        HWND win = FindWindowByPid(static_cast<DWORD>(pid));
-        SetWindowGeometry(win, geometry.x() - refer.x(), geometry.y() - refer.y(), geometry.width() * screen->devicePixelRatio(), geometry.height() * screen->devicePixelRatio());
-        SetWallpaperWindow(win);
-        SetWindowGeometry(win, geometry.x() - refer.x(), geometry.y() - refer.y(), geometry.width() * screen->devicePixelRatio(), geometry.height() * screen->devicePixelRatio());
-    });
+    if (m_process->state() == QProcess::NotRunning)
+    {
+        this->launch(screen, file);
+    }
+    else
+    {
+        this->stop();
+        QTimer::singleShot(100, [this, screen, file](){this->launch(screen, file);});
+    }
+    
 }
 
 void CmdWallpaper::stop()
 {
+    m_timer->stop();
     DetachWallpaperWindow(nullptr);
-    m_process->terminate();
-    // QTimer::singleShot(500, [this](){
-    //     if (m_process->state() == QProcess::NotRunning) {
-    //         return;
-    //     }
-    //     m_process->kill();
-    // });
+    m_process->kill();
+}
+
+void CmdWallpaper::launch(const QScreen* screen, const QString& file) noexcept
+{
+    m_screen = screen;
+    QStringList args = m_args;
+    args << file;
+    m_process->start(m_cmd, args);
+    if (m_process->state() == QProcess::NotRunning)
+    {
+        QMessageBox::critical(nullptr, tr("Error"), m_process->errorString());
+        return;
+    }
+    m_timer->start(100);
+}
+
+void CmdWallpaper::attach() const noexcept
+{
+    HWND win = FindWindowByPid(static_cast<DWORD>(m_process->processId()));
+    if (win == 0) return;
+    m_timer->stop();
+    auto geometry = m_screen->geometry();
+    auto refer = m_screen->virtualGeometry();
+    auto scale = m_screen->devicePixelRatio();
+    SetWindowGeometry(win, geometry.x() - refer.x(), geometry.y() - refer.y(), geometry.width() * scale, geometry.height() * scale);
+    SetWallpaperWindow(win);
+    SetWindowGeometry(win, geometry.x() - refer.x(), geometry.y() - refer.y(), geometry.width() * scale, geometry.height() * scale);
+    m_timer->stop();
 }
