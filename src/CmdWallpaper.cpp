@@ -22,7 +22,7 @@ CmdWallpaper::~CmdWallpaper() noexcept
 void CmdWallpaper::start(const QScreen* screen, const QString& file)
 {
     QStringList args = m_args;
-    args << "file:///" + file;
+    args << file;
     qDebug() << args;
     m_process->start(m_cmd, args);
     auto pid = m_process->processId();

@@ -50,7 +50,7 @@ ConfigWidget::ConfigWidget(QScreen* screen, QWidget* parent) noexcept:
         );
 
         if (!fileName.isEmpty()) {
-            m_file->setText(fileName);
+            m_file->setText("file:///" + fileName);
         }
     });
 

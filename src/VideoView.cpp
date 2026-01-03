@@ -101,11 +101,10 @@ void VideoView::toggle() const noexcept
 
 void VideoView::setFile(const QString& src) const noexcept
 {
-    QUrl url = QUrl::fromLocalFile(src);
 #if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
-    m_player->setMedia(url);
+    m_player->setMedia(src);
 #else
-    m_player->setSource(url);
+    m_player->setSource(src);
 #endif
     m_player->play();
 }
