@@ -1,6 +1,7 @@
 #include "CmdWallpaper.h"
 #include "WallpaperTool.h"
 #include <QTimer>
+#include <QMessageBox>
 
 CmdWallpaper::CmdWallpaper(QString cmd, QStringList args) noexcept:
     QObject{nullptr},
@@ -8,8 +9,8 @@ CmdWallpaper::CmdWallpaper(QString cmd, QStringList args) noexcept:
     m_args{std::move(args)},
     m_process{new QProcess{this}}
 {
-    connect(m_process, &QProcess::errorOccurred, this, [this](QProcess::ProcessError error) {
-        qDebug() << "QProcess error:" << error << m_process->errorString();
+    connect(m_process, &QProcess::errorOccurred, this, [this]() {
+        QMessageBox::critical(nullptr, tr("Error"), m_process->errorString());
     });
 }
 
