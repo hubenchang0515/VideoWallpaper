@@ -2,7 +2,7 @@
 
 Video wallpaper software on Windows.
 
-![preview](./preview.webp)
+![preview](./image/preview.webp)
 
 ## Note
 
